@@ -89,7 +89,12 @@ If you wish to communicate with the cluster using the hostnames from your local 
 ```
 docker $(docker-machine config swarm-master) run -p 8888:8888 -d --name=proxy --hostname=proxy.weave.local paintedfox/tinyproxy; docker network connect weavedemo_external proxy ; docker network connect weavedemo_internal proxy ; docker network connect weavedemo_secure proxy ; docker network connect weavedemo_backoffice proxy
 ```
-
+#Reuse
+```
+docker-machine start default
+eval $(docker-machine env default)
+```
+When reusing the machine you may have a new IP therefor you need to rerun "docker-machine env"
 # Uninstalling
 This will remove all docker-machines.
 
