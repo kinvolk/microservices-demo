@@ -77,6 +77,11 @@
                                 </tr>
                                 </thead>
                                 <tbody id="cart-list">
+                                <tr>
+                                    <td colspan="1"></td>
+                                    <td colspan="6" id="cart-list-loading">Loading...</td>
+                                </tr>
+
                                 </tbody>
                                 <tfoot>
                                 <tr>
@@ -138,19 +143,19 @@
                             <tbody>
                             <tr>
                                 <td>Order subtotal</td>
-                                <th id="orderSubtotal">$0.00</th>
+                                <th id="orderSubtotal">...</th>
                             </tr>
                             <tr>
                                 <td>Shipping and handling</td>
-                                <th id="orderShipping">$0.00</th>
+                                <th id="orderShipping">...</th>
                             </tr>
                             <tr>
                                 <td>Tax</td>
-                                <th id="orderTax">$0.00</th>
+                                <th id="orderTax">...</th>
                             </tr>
                             <tr class="total">
                                 <td>Total</td>
-                                <th id="orderGrandTotal">$0.00</th>
+                                <th id="orderGrandTotal">...</th>
                             </tr>
                             </tbody>
                         </table>
@@ -279,7 +284,9 @@ _________________________________________________________ -->
                             $('#cartTotal').text('$' + cartTotal.toFixed(2));
                             $('#orderSubtotal').text('$' + cartTotal.toFixed(2));
                             $('#orderShipping').text('$' + shipping.toFixed(2));
+                            $('#orderTax').text('$0.00');
                             $('#orderGrandTotal').text('$' + (cartTotal + shipping).toFixed(2));
+                            $('#cart-list-loading').text('');
                         });
                     }
                 });
