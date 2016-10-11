@@ -18,7 +18,7 @@ items:
         spec:
           containers:
             - name: weavescope-app
-              image: 'weaveworks/scope:0.17.1'
+              image: 'asymmetric/scope:ebpf-0b9e843-WIP'
               args:
                 - '--no-probe'
               ports:
@@ -31,7 +31,6 @@ items:
     apiVersion: v1
     kind: Service
     spec:
-      type: LoadBalancer
       ports:
         - name: app
           port: 80
@@ -40,6 +39,7 @@ items:
       selector:
         app: weavescope
         weavescope-component: weavescope-app
+      clusterIP: 10.0.0.200
   - metadata:
       labels:
         app: weavescope
@@ -58,7 +58,7 @@ items:
           hostNetwork: true
           containers:
             - name: weavescope-probe
-              image: 'weaveworks/scope:0.17.1'
+              image: 'asymmetric/scope:ebpf-0b9e843-WIP'
               args:
                 - '--no-app'
                 - '--probe.docker.bridge=docker0'
@@ -67,13 +67,20 @@ items:
                 - '$(WEAVESCOPE_APP_SERVICE_HOST):$(WEAVESCOPE_APP_SERVICE_PORT)'
               securityContext:
                 privileged: true
-              resources:
-                limits:
-                  cpu: 50m
               volumeMounts:
                 - name: docker-sock
                   mountPath: /var/run/docker.sock
+                - name: modules
+                  mountPath: /lib/modules
+                - name: debug
+                  mountPath: /sys/kernel/debug
           volumes:
             - name: docker-sock
               hostPath:
                 path: /var/run/docker.sock
+            - name: modules
+              hostPath:
+                path: /lib/modules
+            - name: debug
+              hostPath:
+                path: /sys/kernel/debug
