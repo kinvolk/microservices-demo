@@ -1,0 +1,25 @@
+pipeline:
+  build:
+    image: ubuntu:17.10
+    commands:
+      - apt-get update && apt-get install -y curl
+      - curl -Lo /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+      - chmod +x /usr/local/bin/kubectl
+      - kubectl help
+      - apt-get install -y systemd docker.io
+      - systemctl --no-pager
+      - docker ps
+      - docker run --rm --privileged --pid=host --net=host --uts=host --ipc=host ubuntu:17.10 id
+      - env
+      - systemd-run /opt/ecke/kube-spawn-start.sh
+      - for i in $(seq 1 60) ; do sleep 5 ; kubectl get nodes || true ; done
+      - echo systemd-run --service-type=oneshot /opt/ecke/kube-spawn-stop.sh
+    volumes:
+      - /run/dbus:/run/dbus
+      - /run/systemd:/run/systemd
+      - /run/docker.sock:/run/docker.sock
+      - /opt/ecke:/opt/ecke
+      - /var/lib/kube-spawn:/var/lib/kube-spawn
+    environment:
+      - KUBECONFIG=/var/lib/kube-spawn/default/kubeconfig
+    network_mode: "host"
